@@ -36,8 +36,9 @@ install_tools() {
 
 # Setup credential management scripts
 setup_credential_scripts() {
-    # Copy modular scripts to system locations
-    if [ -d "/config/scripts" ]; then
+    # Copy modular scripts to system locations if they exist
+    if [ -d "/config/scripts" ] && [ -f "/config/scripts/credentials-manager.sh" ] && [ -f "/config/scripts/credentials-service.sh" ] && [ -f "/config/scripts/claude-auth.sh" ]; then
+        bashio::log.info "Found modular scripts, copying to system locations..."
         if ! cp /config/scripts/credentials-manager.sh /usr/local/bin/credentials-manager; then
             bashio::log.error "Failed to copy credentials-manager script"
             exit 1
@@ -50,9 +51,10 @@ setup_credential_scripts() {
             bashio::log.error "Failed to copy claude-auth script"
             exit 1
         fi
+        bashio::log.info "Modular scripts copied successfully"
     else
         # Fallback to embedded scripts for backward compatibility
-        bashio::log.warning "Script modules not found, using embedded versions"
+        bashio::log.info "Modular scripts not found in /config/scripts, using embedded versions"
         
         # Create embedded credentials-manager script
         cat > /usr/local/bin/credentials-manager << 'EOF'
