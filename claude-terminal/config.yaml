@@ -38,5 +38,10 @@ map:
 # Service startup configuration
 startup: services
 
+# Elevated privileges for ha CLI access
+hassio_api: true
+hassio_role: manager
+docker_api: true
+
 # Web UI access URL
 webui: http://[HOST]:[PORT:7681]/
