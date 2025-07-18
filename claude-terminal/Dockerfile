@@ -10,6 +10,13 @@ RUN apk add --no-cache \
     && npm install -g @anthropic-ai/claude-code@latest \
     && npm cache clean --force
 
+# Install Home Assistant CLI
+ARG BUILD_ARCH
+ARG HA_CLI_VERSION="4.39.0"
+RUN curl -L -s -o /usr/bin/ha \
+    "https://github.com/home-assistant/cli/releases/download/${HA_CLI_VERSION}/ha_${BUILD_ARCH}" \
+    && chmod a+x /usr/bin/ha
+
 # Create directory for Claude configuration and set working directory
 RUN mkdir -p /config/claude-config
 WORKDIR /config
