@@ -24,6 +24,7 @@ WORKDIR /config
 # Copy startup script and modular scripts
 COPY run.sh /run.sh
 COPY scripts/ /config/scripts/
+COPY config/CLAUDE.md /config/CLAUDE.md
 RUN chmod +x /run.sh \
     && chmod +x /config/scripts/*.sh
 
