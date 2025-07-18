@@ -1,6 +1,8 @@
 # Claude Code Context for Home Assistant
 
-You are running inside a Home Assistant add-on with full access to the Home Assistant configuration and system.
+⚠️ **IMPORTANT: You are working on a LIVE Home Assistant system!** ⚠️
+
+You are running inside a Home Assistant add-on with full access to the Home Assistant configuration and system. All changes you make are immediate and affect the running system. There is no sandbox or test environment.
 
 ## Home Assistant CLI Commands
 
@@ -111,11 +113,46 @@ automation manual: !include_dir_list automations/
 
 ## Safety Guidelines
 
-1. **Always backup before major changes**
-2. **Check configuration before restart**: `ha core check`
-3. **Monitor logs after changes**: `ha core logs --follow`
-4. **Test automations carefully** - they can trigger physical devices
-5. **Keep secrets in secrets.yaml** - never hardcode passwords
+### ⚠️ Working with Live Configuration
+1. **You are modifying a LIVE system** - All changes take effect immediately
+2. **Always backup before major changes**: `ha backups new --name "Before_$(date +%Y%m%d_%H%M%S)"`
+3. **Check configuration before restart**: `ha core check`
+4. **Monitor logs after changes**: `ha core logs --follow`
+5. **Test automations carefully** - they can trigger physical devices
+6. **Keep secrets in secrets.yaml** - never hardcode passwords
+7. **Consider creating test entities** before modifying production ones
+
+### Cache Busting for Web UI Testing
+When modifying Lovelace dashboards or frontend resources, the browser may cache old versions. Users should:
+
+1. **Force refresh the browser**:
+   - Chrome/Edge: `Ctrl+Shift+R` (Windows/Linux) or `Cmd+Shift+R` (Mac)
+   - Firefox: `Ctrl+F5` (Windows/Linux) or `Cmd+Shift+R` (Mac)
+   - Safari: `Cmd+Option+E` then `Cmd+R`
+
+2. **Add version parameters to resources**:
+   ```yaml
+   # In configuration.yaml or ui-lovelace.yaml
+   resources:
+     - url: /local/my-card.js?v=1.0.1
+       type: module
+   ```
+
+3. **Clear Home Assistant frontend cache**:
+   - Go to Developer Tools → Services
+   - Call service: `frontend.reload_themes`
+   - Or restart Home Assistant: `ha core restart`
+
+4. **Use browser dev tools**:
+   - Open with F12
+   - Go to Network tab
+   - Check "Disable cache" while dev tools are open
+
+5. **For custom cards/resources**:
+   ```bash
+   # Increment version in resource URLs after changes
+   sed -i 's/\?v=1\.0\.0/?v=1.0.1/g' /config/ui-lovelace.yaml
+   ```
 
 ## Entity Information
 
